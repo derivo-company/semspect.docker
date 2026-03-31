@@ -61,6 +61,7 @@ case "$COMMAND" in
             --semspect.rdf.databases[0].database=default-db \
             --semspect.rdf.databases[0].mode=load \
             --semspect.rdf.databases[0].indicesDirectory="$INDEX_PATH" \
+            --semspect.rdf.managed.indicesDirectory=/var/lib/semspect/server-indices \
             "${@:3}" # <-- forward all additional arguments
         ;;
 
@@ -68,6 +69,8 @@ case "$COMMAND" in
         # default fallback: boot the empty managed mode REST API
         echo "Starting Daemon Mode: Managed API Server..."
         # pass all user arguments ($@) to the server script
-        exec /app/semspect-server.sh "$@"
+        exec /app/semspect-server.sh \
+            --semspect.rdf.managed.indicesDirectory=/var/lib/semspect/server-indices \
+            "$@"
         ;;
 esac

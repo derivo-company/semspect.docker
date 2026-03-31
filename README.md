@@ -60,6 +60,7 @@ Additionally, SemSpect will automatically create a `server-data` directory along
 │   └── categories.yaml
 ├── my-data.ttl              <-- You provide this (raw RDF data)
 ├── indices/                 <-- SemSpect generates this (during index mode)
+├── server-indices/          <-- SemSpect generates this (live databases managed via REST API)
 └── server-data/             <-- SemSpect generates this (saved explorations & custom classes)
 ```
 
