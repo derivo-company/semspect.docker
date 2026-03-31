@@ -14,6 +14,17 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get latest git tag and strip 'v'
+        id: get_tag
+        run: |
+          git fetch --tags
+          LATEST_TAG=$(git describe --tags --abbrev=0)
+          STRIPPED_TAG=${LATEST_TAG#v}  # Remove leading 'v'
+          echo "Latest tag (stripped): $STRIPPED_TAG"
+          echo "stripped_tag=$STRIPPED_TAG" >> $GITHUB_OUTPUT
 
       - name: Docker meta
         id: meta
@@ -26,6 +37,8 @@ jobs:
           # autogenerate tags from semantic versioning tag
           tags: |
             type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=${{ steps.get_tag.outputs.stripped_tag }}
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v4
