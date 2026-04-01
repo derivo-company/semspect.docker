@@ -20,18 +20,28 @@ docker run -d -p 8080:8080 \
   ghcr.io/derivo-company/rdf-semspect:latest
 ```
 
-### 2. Index Mode
+### 2. Serve Mode (Quick Evaluation)
+Ideal for free users or quick tests. SemSpect boots, generates the indices for the specified RDF file, and immediately serves the UI in a single step.
+
+```bash
+docker run -d -p 8080:8080 \
+  -v $(pwd)/semspect-workspace:/var/lib/semspect \
+  ghcr.io/derivo-company/rdf-semspect:latest \
+  serve /var/lib/semspect/my-data.ttl
+```
+
+### 3. Generate Mode
 A one-shot batch process. SemSpect boots, generates the indices for the specified RDF file, writes them to the mounted volume, and automatically exits. 
 
 ```bash
 docker run --rm \
   -v $(pwd)/semspect-workspace:/var/lib/semspect \
   ghcr.io/derivo-company/rdf-semspect:latest \
-  index /var/lib/semspect/my-data.ttl
+  generate /var/lib/semspect/my-data.ttl
 ```
 *Note: You can append native Spring Boot parameters to the command to customize the indexing process (e.g., `--semspect.rdf.databases[0].indexing.numberOfThreads=4`).*
 
-### 3. Load Mode
+### 3. Load Mode (Requires License)
 Instantly boots the server by bypassing data parsing and loading a pre-calculated index directory directly into memory.
 
 ```bash
@@ -41,7 +51,7 @@ docker run -d -p 8080:8080 \
   ghcr.io/derivo-company/rdf-semspect:latest \
   load /var/lib/semspect/indices
 ```
-*Note: Just like Index Mode, you can append parameters to customize exploration settings (e.g., `--semspect.rdf.databases[0].exploration.showTopClassInTree=true`).*
+*Note: Just like Generate Mode, you can append parameters to customize exploration settings (e.g., `--semspect.rdf.databases[0].exploration.showTopClassInTree=true`).*
 
 ## Configuration & License
 
@@ -59,12 +69,16 @@ Additionally, SemSpect will automatically create a `server-data` directory along
 │   ├── facets.yaml
 │   └── categories.yaml
 ├── my-data.ttl              <-- You provide this (raw RDF data)
-├── indices/                 <-- SemSpect generates this (during index mode)
+├── indices/                 <-- SemSpect generates this (during 'generate' mode)
 ├── server-indices/          <-- SemSpect generates this (live databases managed via REST API)
 └── server-data/             <-- SemSpect generates this (saved explorations & custom classes)
 ```
 
 *Note: If you need to override deeper Spring Boot server settings beyond the auto-detected YAML files, you can append `--spring.config.additional-location=/path/to/custom_config.yaml` to any of the `docker run` commands above.*
+
+## Under the Hood: Mapping to Backend Scripts
+
+Under the hood, all Docker commands (`serve`, `generate`, `load`) execute `semspect-server.sh`. The Docker wrapper simply translates the native Docker commands into the appropriate Spring Boot parameters, and automatically pins the `server-indices` and `server-data` properties to the `/var/lib/semspect` workspace volume.
 
 ## For Developers
 

@@ -25,19 +25,37 @@ $SEMSPECT_JDK_OPTIONS"
 COMMAND=$1
 
 case "$COMMAND" in
-    index)
+    serve)
+        DATA_PATH=$2
+        if [ -z "$DATA_PATH" ]; then
+            echo "Error: You must provide a path to the RDF data."
+            echo "Usage: docker run -p 8080:8080 semspect-image serve /path/to/data.ttl"
+            exit 1
+        fi
+        TARGET_DIR=$(dirname "$DATA_PATH")
+
+        echo "Starting Serve Mode: Generating indices for $DATA_PATH and starting server..."
+        exec /app/semspect-server.sh \
+            --semspect.rdf.databases[0].database=default-db \
+            --semspect.rdf.databases[0].mode=generate \
+            --semspect.rdf.databases[0].indexing.rdfDataSources[0]="file://$DATA_PATH" \
+            --semspect.rdf.databases[0].indicesDirectory="$TARGET_DIR/indices" \
+            "${@:3}" # <-- forward all additional arguments
+        ;;
+
+    generate)
         # path to the data file or directory mounted in the volume
         DATA_PATH=$2
         if [ -z "$DATA_PATH" ]; then
             echo "Error: You must provide a path to the RDF data."
-            echo "Usage: docker run semspect-image index /path/to/data.ttl"
+            echo "Usage: docker run semspect-image generate /path/to/data.ttl"
             exit 1
         fi
 
         # extract the directory of the target file to save indices next to it
         TARGET_DIR=$(dirname "$DATA_PATH")
 
-        echo "Starting Index Mode: Generating index for $DATA_PATH..."
+        echo "Starting Generate Mode: Generating indices for $DATA_PATH..."
         exec /app/semspect-server.sh \
             --semspect.rdf.databases[0].database=default-db \
             --semspect.rdf.databases[0].mode=generate \
@@ -48,15 +66,15 @@ case "$COMMAND" in
         ;;
 
     load)
-        # path to the pre-calculated index directory mounted in the volume
+        # path to the pre-calculated indices directory mounted in the volume
         INDEX_PATH=$2
         if [ -z "$INDEX_PATH" ]; then
-            echo "Error: You must provide a path to the index directory."
+            echo "Error: You must provide a path to the indices directory."
             echo "Usage: docker run semspect-image load /path/to/indices"
             exit 1
         fi
 
-        echo "Starting Read-Only Mode: Serving index from $INDEX_PATH..."
+        echo "Starting Read-Only Mode: Serving indices from $INDEX_PATH..."
         exec /app/semspect-server.sh \
             --semspect.rdf.databases[0].database=default-db \
             --semspect.rdf.databases[0].mode=load \
