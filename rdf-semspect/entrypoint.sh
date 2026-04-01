@@ -3,13 +3,6 @@ set -e
 
 CONFIG_DIR="/var/lib/semspect/config"
 
-# Handle license
-# SemSpect expects the license in the installation directory by default.
-# If the user puts a license in the config dropzone, we securely symlink it.
-if [ -f "$CONFIG_DIR/semspect.lic" ]; then
-    echo "Found license in $CONFIG_DIR, linking to application directory..."
-    ln -sf "$CONFIG_DIR/semspect.lic" /app/semspect.lic
-fi
 
 # Bind core configurations
 # We inject the JVM parameters directly into the environment variable expected by the server script.
