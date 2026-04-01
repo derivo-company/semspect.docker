@@ -53,7 +53,6 @@ case "$COMMAND" in
             --semspect.rdf.databases[0].database=default-db \
             --semspect.rdf.databases[0].mode=generate \
             --semspect.rdf.databases[0].indexing.rdfDataSources[0]="file://$DATA_PATH" \
-            --semspect.rdf.databases[0].indicesDirectory="$TARGET_DIR/indices" \
             --semspect.rdf.databases[0].indexing.terminateAfterIndexing=true \
             "${@:3}" # <-- forward all additional arguments
         ;;
