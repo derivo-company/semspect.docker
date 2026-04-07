@@ -34,7 +34,18 @@ jobs:
           LATEST_TAG=$(git describe --tags --abbrev=0)
           STRIPPED_TAG=${LATEST_TAG#v}  # Remove leading 'v'
           echo "Latest tag (stripped): $STRIPPED_TAG"
-          echo "stripped_tag=$STRIPPED_TAG" >> $GITHUB_OUTPUT
+          echo "VERSION=${STRIPPED_TAG#v}" >> $GITHUB_ENV
+
+      - name: Docker meta
+        id: meta
+        # this steps generates some metadata used in build-push-action later on
+        uses: docker/metadata-action@v6
+        with:
+          # this spells the name of the image. 'ghcr.io/derivo-company' seems to be mandatory
+          images: |
+            ghcr.io/derivo-company/rdf-semspect
+          tags: |
+            type=raw,value=${{ env.VERSION }}
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v4
@@ -48,7 +59,7 @@ jobs:
         uses: docker/scout-action@v1
         with:
           command: cves
-          image: ghcr.io/derivo-company/rdf-semspect:${{ steps.get_tag.outputs.stripped_tag }}
+          image: ${{ steps.meta.outputs.tags }}
           write-comment: true
           github-token: ${{ secrets.GITHUB_TOKEN }} # to be able to write the comment
           dockerhub-user: ${{ secrets.DOCKER_HUB_USER }}
