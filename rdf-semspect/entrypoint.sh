@@ -2,7 +2,7 @@
 set -e
 
 CONFIG_DIR="/var/lib/semspect/config"
-
+DATABASE_NAME="${DATABASE_NAME:-default-db}"
 
 # Bind core configurations
 # We inject the JVM parameters directly into the environment variable expected by the server script.
@@ -29,7 +29,7 @@ case "$COMMAND" in
 
         echo "Starting Serve Mode: Generating indices for $DATA_PATH and starting server..."
         exec /app/semspect-server.sh \
-            --semspect.rdf.databases[0].database=default-db \
+            --semspect.rdf.databases[0].database=$DATABASE_NAME \
             --semspect.rdf.databases[0].mode=generate \
             --semspect.rdf.databases[0].indexing.rdfDataSources[0]="file://$DATA_PATH" \
             --semspect.rdf.databases[0].indicesDirectory="$TARGET_DIR/indices" \
@@ -50,7 +50,7 @@ case "$COMMAND" in
 
         echo "Starting Generate Mode: Generating indices for $DATA_PATH..."
         exec /app/semspect-server.sh \
-            --semspect.rdf.databases[0].database=default-db \
+            --semspect.rdf.databases[0].database=$DATABASE_NAME \
             --semspect.rdf.databases[0].mode=generate \
             --semspect.rdf.databases[0].indexing.rdfDataSources[0]="file://$DATA_PATH" \
             --semspect.rdf.databases[0].indicesDirectory="$TARGET_DIR/indices" \
@@ -69,7 +69,7 @@ case "$COMMAND" in
 
         echo "Starting Read-Only Mode: Serving indices from $INDEX_PATH..."
         exec /app/semspect-server.sh \
-            --semspect.rdf.databases[0].database=default-db \
+            --semspect.rdf.databases[0].database=$DATABASE_NAME \
             --semspect.rdf.databases[0].mode=load \
             --semspect.rdf.databases[0].indicesDirectory="$INDEX_PATH" \
             --semspect.rdf.managed.indicesDirectory=/var/lib/semspect/server-indices \
