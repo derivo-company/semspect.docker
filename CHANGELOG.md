@@ -1,0 +1,1 @@
+See: https://doc.semspect.de/rdf-server/further-information/release-notes/
