@@ -8,10 +8,15 @@ Release Notes are distributed via the documentation: [https://doc.semspect.de/rd
 
 ## Usage
 
-The SemSpect Docker image operates using a single persistent volume (`/var/lib/semspect`) and supports three distinct execution modes.
+The SemSpect Docker image operates using a single persistent volume (`/var/lib/semspect`) and supports four distinct execution modes.
+
+Remark: All examples below mount the local directory `./semspect-workspace` to `/var/lib/semspect`. 
+Copy or link your local files in `./semspect-workspace` to make them available to SemSpect.
 
 ### 1. Managed Mode (Default)
-Starts the SemSpect multi-database REST API. Databases and content are created and imported dynamically via the API while the server is running.
+
+Starts the SemSpect multi-database REST API used to create databases and import data.
+Databases and indexes created in previous runs will be loaded only if you have a license.
 
 ```bash
 docker run -d -p 8080:8080 \
@@ -21,6 +26,7 @@ docker run -d -p 8080:8080 \
 ```
 
 ### 2. Serve Mode (Quick Evaluation)
+
 Ideal for free users or quick tests. SemSpect boots, generates the indices for the specified RDF file, and immediately serves the UI in a single step.
 
 ```bash
@@ -31,6 +37,7 @@ docker run -d -p 8080:8080 \
 ```
 
 ### 3. Generate Mode
+
 A one-shot batch process. SemSpect boots, generates the indices for the specified RDF file, writes them to the mounted volume, and automatically exits. 
 
 ```bash
@@ -39,10 +46,12 @@ docker run --rm \
   ghcr.io/derivo-company/rdf-semspect:latest \
   generate /var/lib/semspect/my-data.ttl
 ```
+
 *Note: You can append native Spring Boot parameters to the command to customize the indexing process (e.g., `--semspect.rdf.databases[0].indexing.numberOfThreads=4`).*
 
-### 3. Load Mode (Requires License)
-Instantly boots the server by bypassing data parsing and loading a pre-calculated index directory directly into memory.
+### 4. Load Mode (License Required)
+
+SemSpect boots and loads a pre-calculated index directory.
 
 ```bash
 docker run -d -p 8080:8080 \
@@ -51,6 +60,7 @@ docker run -d -p 8080:8080 \
   ghcr.io/derivo-company/rdf-semspect:latest \
   load /var/lib/semspect/indices
 ```
+
 *Note: Just like Generate Mode, you can append parameters to customize exploration settings (e.g., `--semspect.rdf.databases[0].exploration.showTopClassInTree=true`).*
 
 ## Configuration & License
