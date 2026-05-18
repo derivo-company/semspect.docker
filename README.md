@@ -92,6 +92,12 @@ Under the hood, all Docker commands (`serve`, `generate`, `load`) execute `semsp
 
 ## For Developers
 
+### Build test Images
+
+The build pipeline gets triggered by pushes to `feature/` and `bugfix/` branches.
+Images build this way are published as usual, but not tagged as `:latest`. Use the release Process as described below to publish 'normal' releases
+
+
 ### Release Process 
 
 To create a new release:
