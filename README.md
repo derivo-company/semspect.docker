@@ -103,7 +103,7 @@ Images build this way are published as usual, but not tagged as `:latest`. Use t
 To create a new release:
 
 1. Update the version in `./rdf-semspect/Dockerfile` to the desired release version.
-2. Create a matching tag in this repository.
+2. Create a matching tag in this repository. **For Docker Scout: Make sure to target the develop branch with the release tag. Or else Docker Scout will check an old image**
 
 This will trigger a build of the new docker image. It should be available under `ghcr.io/derivo-company/rdf-semspect:SEMSPECT_VERSION`.
 
