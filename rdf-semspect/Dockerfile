@@ -1,5 +1,5 @@
 FROM alpine AS builder
-ARG ARTIFACT=https://www.semspect.de/rdf-semspect-distribution-19.2.1.zip
+ARG ARTIFACT=https://www.semspect.de/rdf-semspect-distribution-20.0.0.zip
 
 RUN apk upgrade --no-cache && \
     apk add --no-cache unzip
@@ -12,7 +12,7 @@ RUN unzip rdf-semspect-distribution-*.zip && \
     mv rdf-semspect-distribution-*/* . && \
     rmdir rdf-semspect-distribution-*/
 
-FROM amazoncorretto:17-alpine
+FROM amazoncorretto:21-alpine
 
 RUN apk upgrade --no-cache && \
     apk add --no-cache bash
