@@ -12,7 +12,7 @@ RUN unzip rdf-semspect-distribution-*.zip && \
     mv rdf-semspect-distribution-*/* . && \
     rmdir rdf-semspect-distribution-*/
 
-FROM amazoncorretto:21-alpine
+ FROM amazoncorretto:25-alpine
 
 RUN apk upgrade --no-cache && \
     apk add --no-cache bash
