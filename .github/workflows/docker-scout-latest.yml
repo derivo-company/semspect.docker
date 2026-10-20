@@ -73,3 +73,18 @@ jobs:
         uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: sarif.output.json
+          
+      - name: Generate CycloneDX SBOM
+        uses: docker/scout-action@v1
+        with:
+          command: sbom
+          image: ${{ steps.meta.outputs.tags }}
+          format: cyclonedx
+          output: bom.json
+          dockerhub-user: ${{ secrets.DOCKER_HUB_USER }}
+          dockerhub-password: ${{ secrets.DOCKER_HUB_PAT }}
+      
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cyclonedx-sbom
+          path: bom.json
