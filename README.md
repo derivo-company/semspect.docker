@@ -90,6 +90,14 @@ Additionally, SemSpect will automatically create a `server-data` directory along
 
 Under the hood, all Docker commands (`serve`, `generate`, `load`) execute `semspect-server.sh`. The Docker wrapper simply translates the native Docker commands into the appropriate Spring Boot parameters, and automatically pins the `server-indices` and `server-data` properties to the `/var/lib/semspect` workspace volume.
 
+## Supported Architectures
+
+The image is published as a multi-arch image for the following platforms:
+   OS/Arch | Status |
+ |---------|--------|
+ | `linux/amd64` | ✅ Supported (x86-64, Intel/AMD, typical cloud VMs) |
+ | `linux/arm64` | ✅ Supported (Apple Silicon, AWS Graviton, Raspberry Pi 5) |
+
 ## For Developers
 
 ### Build test Images
